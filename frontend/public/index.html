@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Waste Classifier Application - Learn how to properly sort your waste" />
+  <title>Waste Classifier | Sort Smarter</title>
+  <style>
+    :root {
+      --primary-color: #2ecc71;
+      --secondary-color: #27ae60;
+      --accent-color: #3498db;
+      --dark-color: #2c3e50;
+      --light-color: #ecf0f1;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --info-color: #3498db;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 0.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin-left: 1.5rem;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--light-color);
+    }
+    
+    .hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                  url('/api/placeholder/1200/400') center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+      background-color: #2980b9;
+    }
+    
+    .features {
+      padding: 4rem 0;
+      background-color: white;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--dark-color);
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .classifier {
+      padding: 4rem 0;
+      background-color: var(--light-color);
+    }
+    
+    .classifier-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .upload-area {
+      width: 100%;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 3rem;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      background-color: white;
+      transition: border-color 0.3s;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .result-container {
+      width: 100%;
+      display: none;
+      margin-top: 2rem;
+    }
+    
+    .waste-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    
+    .category {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .category h3 i {
+      margin-right: 0.5rem;
+    }
+    
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .footer-section h3 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-links a {
+      color: var(--light-color);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary-color);
+    }
+    
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-icons a {
+      color: white;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    
+    .social-icons a:hover {
+      color: var(--primary-color);
+    }
+    
+    .copyright {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+  <!-- Font awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <i class="fas fa-recycle"></i> Waste Classifier
+        </div>
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#classifier">Classifier</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="container">
+      <h1>Smart Waste Classification</h1>
+      <p>Upload a photo of your waste item and our AI will help you determine how to properly dispose of it.</p>
+      <a href="#classifier" class="btn">Start Classifying</a>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3>Take a Photo</h3>
+          <p>Snap a picture of the item you want to dispose of or upload an existing image.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3>AI Analysis</h3>
+          <p>Our advanced algorithm will analyze the image and identify the type of waste.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <h3>Get Results</h3>
+          <p>Receive detailed information on how to properly recycle or dispose of your item.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="classifier" class="classifier">
+    <div class="container">
+      <h2 class="section-title">Classify Your Waste</h2>
+      <div class="classifier-container">
+        <div class="upload-area" id="uploadArea">
+          <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary-color);"></i>
+          <h3>Drag & Drop or Click to Upload</h3>
+          <p>Supported formats: JPG, PNG, JPEG</p>
+          <input type="file" id="fileInput" accept="image/*" style="display: none;">
+          <button class="btn" style="margin-top: 1rem;">Select Image</button>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+          <h3>Classification Result</h3>
+          <div id="resultOutput">
+            <!-- Results will be displayed here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="waste-categories">
+        <div class="category">
+          <h3><i class="fas fa-leaf"></i> Compostable</h3>
+          <p>Food scraps, yard waste, paper products, and other organic materials that can be broken down naturally.</p>
+        </div>
+        <div class="category">
+          <h3><i class="fas fa-recycle"></i> Recyclable</h3>
+          <p>Paper, cardboard, certain plastics, glass, aluminum, and other materials that can be processed and reused.</p>
+        </div>
+        <div class="category">
+          <h3><i class="fas fa-trash"></i> Landfill</h3>
+          <p>Non-recyclable plastics, contaminated materials, and other items that cannot be recycled or composted.</p>
+        </div>
+        <div class="category">
+          <h3><i class="fas fa-exclamation-triangle"></i> Hazardous</h3>
+          <p>Batteries, electronics, chemicals, and other items that require special disposal methods.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About Us</h3>
+          <p>We're dedicated to making waste management easier and more accessible through technology.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#classifier">Classifier</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect With Us</h3>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 Waste Classifier. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  <script>
+    // JavaScript for the waste classifier using Hugging Face model "prithivMLmods/Augmented-Waste-Classifier-SigLIP2"
+    document.addEventListener('DOMContentLoaded', function() {
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+      const resultContainer = document.getElementById('resultContainer');
+      const resultOutput = document.getElementById('resultOutput');
+      let isClassifying = false;
+      
+      // Click on upload area to trigger file input
+      uploadArea.addEventListener('click', function() {
+        if (!isClassifying) {
+          fileInput.click();
+        }
+      });
+      
+      // Handle drag and drop
+      uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!isClassifying) {
+          uploadArea.style.borderColor = 'var(--primary-color)';
+          uploadArea.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
+        }
+      });
+      
+      uploadArea.addEventListener('dragleave', function() {
+        uploadArea.style.borderColor = '#ccc';
+        uploadArea.style.backgroundColor = 'white';
+      });
+      
+      uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#ccc';
+        uploadArea.style.backgroundColor = 'white';
+        
+        if (!isClassifying && e.dataTransfer.files.length > 0) {
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+      
+      // Handle file selection
+      fileInput.addEventListener('change', function() {
+        if (!isClassifying && fileInput.files.length > 0) {
+          handleFile(fileInput.files[0]);
+        }
+      });
+      
+      // Categories based on the prithivMLmods/Augmented-Waste-Classifier-SigLIP2 model
+      // Source: https://huggingface.co/prithivMLmods/Augmented-Waste-Classifier-SigLIP2
+      const wasteCategories = {
+        "battery": {
+          category: "Hazardous",
+          icon: "fas fa-exclamation-triangle",
+          color: "var(--danger-color)",
+          description: "Battery",
+          instructions: "Take to a hazardous waste facility or battery recycling drop-off location.",
+          fact: "One recycled battery can prevent heavy metals and toxins from contaminating soil and water."
+        },
+        "biological": {
+          category: "Compostable",
+          icon: "fas fa-leaf",
+          color: "var(--primary-color)",
+          description: "Biological waste",
+          instructions: "Most plant matter can be composted. For animal waste, check local guidelines.",
+          fact: "Composting returns valuable nutrients to the soil and reduces the need for chemical fertilizers."
+        },
+        "brown-glass": {
+          category: "Recyclable",
+          icon: "fas fa-wine-bottle",
+          color: "var(--info-color)",
+          description: "Brown glass",
+          instructions: "Rinse and place in your recycling bin or take to a glass recycling point.",
+          fact: "Brown glass is commonly used for beer bottles because it protects contents from UV light damage."
+        },
+        "cardboard": {
+          category: "Recyclable",
+          icon: "fas fa-box",
+          color: "var(--info-color)",
+          description: "Cardboard",
+          instructions: "Break down boxes, remove tape and staples if possible, and keep dry.",
+          fact: "Recycling one ton of cardboard saves 9 cubic yards of landfill space."
+        },
+        "clothes": {
+          category: "Donatable/Recyclable",
+          icon: "fas fa-tshirt",
+          color: "var(--warning-color)",
+          description: "Clothing",
+          instructions: "Donate usable items. For worn-out textiles, check for local textile recycling programs.",
+          fact: "The average American throws away about 81 pounds of clothing each year."
+        },
+        "green-glass": {
+          category: "Recyclable",
+          icon: "fas fa-wine-bottle",
+          color: "var(--info-color)",
+          description: "Green glass",
+          instructions: "Rinse and place in your recycling bin or take to a glass recycling point.",
+          fact: "Green glass bottles are commonly used for wine because they protect contents from light damage."
+        },
+        "metal": {
+          category: "Recyclable",
+          icon: "fas fa-recycle",
+          color: "var(--info-color)",
+          description: "Metal",
+          instructions: "Clean metal items can be placed in your recycling bin.",
+          fact: "Metals like aluminum and steel can be recycled indefinitely without losing quality."
+        },
+        "paper": {
+          category: "Recyclable",
+          icon: "fas fa-file-alt",
+          color: "var(--info-color)",
+          description: "Paper",
+          instructions: "Clean paper can be recycled; soiled paper should be composted.",
+          fact: "Recycling one ton of paper saves 17 trees and 7,000 gallons of water."
+        },
+        "plastic": {
+          category: "Recyclable",
+          icon: "fas fa-recycle",
+          color: "var(--info-color)",
+          description: "Plastic",
+          instructions: "Clean and empty plastic items can be recycled. Check the recycling symbol for specific guidance.",
+          fact: "Only about 9% of all plastic ever made has been recycled, while about 12% has been incinerated."
+        },
+        "shoes": {
+          category: "Donatable/Recyclable",
+          icon: "fas fa-shoe-prints",
+          color: "var(--warning-color)",
+          description: "Shoes",
+          instructions: "Donate usable pairs. Some athletic shoe companies have recycling programs for worn-out shoes.",
+          fact: "Repurposed shoe materials can be used in creating athletic surfaces like running tracks."
+        },
+        "trash": {
+          category: "Landfill",
+          icon: "fas fa-trash",
+          color: "var(--danger-color)",
+          description: "Non-recyclable waste",
+          instructions: "Place in your regular trash bin.",
+          fact: "The average person generates about 4.5 pounds of waste per day."
+        },
+        "white-glass": {
+          category: "Recyclable",
+          icon: "fas fa-wine-bottle",
+          color: "var(--info-color)",
+          description: "Clear/white glass",
+          instructions: "Rinse and place in your recycling bin or take to a glass recycling point.",
+          fact: "Clear glass is the most widely recycled glass as it can be recycled into any color."
+        },
+        "other": {
+          category: "Check Local Guidelines", 
+          icon: "fas fa-question-circle",
+          color: "#6c757d",
+          description: "Unidentified waste",
+          instructions: "If unsure, check with your local waste management authority.",
+          fact: "When in doubt, it's better to throw it in the trash than contaminate recycling streams."
+        }
+      };
+
+      // Function to classify waste using the SigLIP2 model
+      async function classifyWaste(imageElement) {
+        try {
+          // In a real implementation, you would call the Hugging Face API here
+          // For this demo, we'll simulate the classifier response
+
+          // Create a canvas to get image data
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = imageElement.width;
+          canvas.height = imageElement.height;
+          ctx.drawImage(imageElement, 0, 0);
+          
+          // Simulate API call delay
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Get dominant colors for simple image analysis
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          
+          // Very basic image analysis to simulate different classifications
+          // In a real implementation, this would be replaced with the actual model call
+          
+          // Calculate average color values
+          let r = 0, g = 0, b = 0;
+          for (let i = 0; i < imageData.length; i += 4) {
+            r += imageData[i];
+            g += imageData[i + 1];
+            b += imageData[i + 2];
+          }
+          
+          const pixelCount = imageData.length / 4;
+          r = Math.floor(r / pixelCount);
+          g = Math.floor(g / pixelCount);
+          b = Math.floor(b / pixelCount);
+          
+          // Use image characteristics to simulate different classifications
+          // This is just a simulation - the real model would be much more accurate
+          
+          // Generate pseudo-random classification based on image characteristics
+          const hashValue = (r * 3 + g * 5 + b * 7) % 100; // Simple hash of the colors
+          const categories = Object.keys(wasteCategories).filter(k => k !== 'other');
+          
+          // Simulate classification with varying confidence
+          let category, confidence;
+          
+          if (hashValue < 8) {
+            category = 'battery';
+            confidence = 70 + Math.floor(Math.random() * 25);
+          } else if (hashValue < 16) {
+            category = 'biological';
+            confidence = 75 + Math.floor(Math.random() * 20);
+          } else if (hashValue < 24) {
+            category = 'brown-glass';
+            confidence = 80 + Math.floor(Math.random() * 15);
+          } else if (hashValue < 32) {
+            category = 'cardboard';
+            confidence = 85 + Math.floor(Math.random() * 10);
+          } else if (hashValue < 40) {
+            category = 'clothes';
+            confidence = 75 + Math.floor(Math.random() * 20);
+          } else if (hashValue < 48) {
+            category = 'green-glass';
+            confidence = 80 + Math.floor(Math.random() * 15);
+          } else if (hashValue < 56) {
+            category = 'metal'; 
+            confidence = 85 + Math.floor(Math.random() * 10);
+          } else if (hashValue < 64) {
+            category = 'paper';
+            confidence = 85 + Math.floor(Math.random() * 10);
+          } else if (hashValue < 72) {
+            category = 'plastic';
+            confidence = 85 + Math.floor(Math.random() * 10);
+          } else if (hashValue < 80) {
+            category = 'shoes';
+            confidence = 75 + Math.floor(Math.random() * 20);
+          } else if (hashValue < 88) {
+            category = 'trash';
+            confidence = 70 + Math.floor(Math.random() * 25);
+          } else if (hashValue < 96) {
+            category = 'white-glass';
+            confidence = 80 + Math.floor(Math.random() * 15);
+          } else {
+            // Lower chance of "other"
+            category = 'other';
+            confidence = 60 + Math.floor(Math.random() * 20);
+          }
+          
+          return {
+            category: category,
+            confidence: confidence.toFixed(1)
+          };
+        } catch (error) {
+          console.error("Classification error:", error);
+          return { category: "other", confidence: 50.0 };
+        }
+      }
+      
+      // Function to handle the selected file
+      async function handleFile(file) {
+        if (isClassifying) return;
+        
+        isClassifying = true;
+        const reader = new FileReader();
+        
+        // Show loading state
+        resultContainer.style.display = 'block';
+        resultOutput.innerHTML = `
+          <div style="text-align: center; padding: 2rem;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+            <p style="margin-top: 1rem;">Analyzing your waste item...</p>
+          </div>
+        `;
+        
+        reader.onload = async function(e) {
+          // Create image element for classification
+          const img = new Image();
+          img.src = e.target.result;
+          
+          img.onload = async function() {
+            try {
+              // Classify the waste
+              const result = await classifyWaste(img);
+              const wasteInfo = wasteCategories[result.category];
+              
+              // Display the result
+              resultOutput.innerHTML = `
+                <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; gap: 1rem;">
+                  <img src="${e.target.result}" alt="Uploaded waste" style="max-width: 150px; max-height: 150px; border-radius: 8px;">
+                  <div style="flex: 1; min-width: 200px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                      <i class="${wasteInfo.icon}" style="color: ${wasteInfo.color}; margin-right: 0.5rem;"></i>
+                      <h4 style="color: ${wasteInfo.color};">Classification: ${wasteInfo.category}</h4>
+                    </div>
+                    <p><strong>Detected:</strong> ${wasteInfo.description} (${result.confidence}% confidence)</p>
+                    <p style="margin-top: 0.5rem;"><strong>Disposal Instructions:</strong> ${wasteInfo.instructions}</p>
+                  </div>
+                </div>
+                <div style="background-color: #e8f4fc; border-left: 4px solid ${wasteInfo.color}; padding: 1rem; border-radius: 4px;">
+                  <h4 style="color: ${wasteInfo.color};">Did you know?</h4>
+                  <p>${wasteInfo.fact}</p>
+                </div>
+                <button id="classifyAgain" class="btn" style="margin-top: 1rem; background-color: var(--secondary-color);">Classify Another Item</button>
+              `;
+              
+              // Add event listener to "Classify Again" button
+              document.getElementById('classifyAgain').addEventListener('click', function() {
+                isClassifying = false;
+                fileInput.value = '';
+                resultContainer.style.display = 'none';
+              });
+            } catch (error) {
+              console.error("Error processing image:", error);
+              resultOutput.innerHTML = `
+                <div style="text-align: center; padding: 1rem; background-color: #ffebee; border-radius: 8px;">
+                  <i class="fas fa-exclamation-circle" style="color: var(--danger-color); font-size: 2rem;"></i>
+                  <p style="margin-top: 1rem;">Sorry, we couldn't analyze this image. Please try again with a clearer photo.</p>
+                  <button id="tryAgain" class="btn" style="margin-top: 1rem; background-color: var(--secondary-color);">Try Again</button>
+                </div>
+              `;
+              
+              document.getElementById('tryAgain').addEventListener('click', function() {
+                isClassifying = false;
+                fileInput.value = '';
+                resultContainer.style.display = 'none';
+              });
+            }
+          };
+        };
+        
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
